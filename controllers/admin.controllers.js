@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Kirim = require("../models/Kirim");
 const _ = require("lodash");
 
 // @desc Adding User
@@ -22,9 +23,24 @@ exports.addUser = async (req, res, next) => {
 // @access Private
 exports.contacts = async (req, res, next) => {
   try {
-    const contacts = await User.find({}).sort({ createdAt: -1 });
+    const contacts = await User.find({}).sort({ name: 1 });
     return res.status(200).send(contacts);
   } catch (error) {
     return res.status(500).send("Server Error");
   }
 };
+
+// @desc Giving a money
+// @route POST /admin/expense
+// @access Private
+exports.givingMoneyToEmployee = async (req, res, next) => {
+  try {
+    const expense = new Kirim(req.body);
+    const result = await expense.save();
+    const kirim = await Kirim.populate(result, { path: "user" });
+    return res.status(201).send(kirim);
+  } catch (error) {
+    return res.status(500).send("Server Error while giving a money", error);
+  }
+};
+

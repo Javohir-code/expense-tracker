@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Chiqim = require("../models/Chiqim");
 const _ = require("lodash");
 
 // @desc Login User
@@ -30,5 +31,19 @@ exports.getUserById = async (req, res, next) => {
       );
   } catch (error) {
     return res.status(404).send("No user found with this ID");
+  }
+};
+
+// @desc Spending a money
+// @route POST /user/spend-money
+// @access Private
+exports.spendMoneyByUser = async (req, res, next) => {
+  try {
+    const chiqim = new Chiqim(req.body);
+    const result = await chiqim.save();
+    const spendMoney = await Chiqim.populate(result, { path: "user" });
+    return res.status(201).send(spendMoney);
+  } catch (error) {
+    return res.status(500).send("Error occured while spending a money", error);
   }
 };
