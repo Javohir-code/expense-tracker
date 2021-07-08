@@ -1,6 +1,10 @@
 const User = require("../models/User");
 const Kirim = require("../models/Kirim");
+const Chiqim = require("../models/Chiqim");
 const _ = require("lodash");
+const moment = require("moment");
+const { query } = require("express");
+const { rest } = require("lodash");
 
 // @desc Adding User
 // @route POST /admin/add-user
@@ -40,7 +44,58 @@ exports.givingMoneyToEmployee = async (req, res, next) => {
     const kirim = await Kirim.populate(result, { path: "user" });
     return res.status(201).send(kirim);
   } catch (error) {
-    return res.status(500).send("Server Error while giving a money", error);
+    return res.status(400).send("Error while giving a money", error);
   }
 };
 
+// @desc Xarajatlar Diagrammasi(Kirim)
+// @route GET /admin/diagram/kirim
+// @access Private
+exports.diagramKirim = async (req, res, next) => {
+  try {
+    const kirimlar = await Kirim.find({});
+    const queryDate = req.query.date;
+    const newArray = [];
+    kirimlar.forEach((date) => {
+      const dateObj = date.dateKirim;
+      var month = dateObj.getUTCMonth() + 1; //months from 1-12
+      var day = dateObj.getUTCDate();
+      var year = dateObj.getUTCFullYear();
+      day = day.toString().split("") < 10 ? "0" + day : day;
+      month = month.toString().split("") < 10 ? "0" + month : month;
+      newdate = day + "." + month + "." + year;
+      if (newdate == queryDate) {
+        newArray.push(date);
+      }
+    });
+    return res.status(200).send(newArray);
+  } catch (error) {
+    return res.status(500).send("Server error while sending diagram data");
+  }
+};
+
+// @desc Xarajatlar Diagrammasi(Chiqim)
+// @route GET /admin/diagram/chiqim
+// @access Private
+exports.diagramChiqim = async (req, res, next) => {
+  try {
+    const chiqimlar = await Chiqim.find({});
+    const queryDate = req.query.date;
+    const newArray = [];
+    chiqimlar.forEach((date) => {
+      const dateObj = date.dateChiqim;
+      var month = dateObj.getUTCMonth() + 1; //months from 1-12
+      var day = dateObj.getUTCDate();
+      var year = dateObj.getUTCFullYear();
+      day = day.toString().split("") < 10 ? "0" + day : day;
+      month = month.toString().split("") < 10 ? "0" + month : month;
+      newdate = day + "." + month + "." + year;
+      if (newdate == queryDate) {
+        newArray.push(date);
+      }
+    });
+    return res.status(200).send(newArray);
+  } catch (error) {
+    return res.status(500).send("Server error while sending diagram data");
+  }
+};
