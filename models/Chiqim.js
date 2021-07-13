@@ -14,6 +14,7 @@ const chiqimSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    users: String,
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

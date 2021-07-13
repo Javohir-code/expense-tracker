@@ -7,7 +7,7 @@ const {
 } = require("../controllers/user.controllers");
 
 router.route("/login").post(loginUser);
-router.route("/:id").get(getUserById);
+router.route("/:userId").get(getUserById);
 router.route("/spend-money").post(spendMoneyByUser);
 
 module.exports = router;

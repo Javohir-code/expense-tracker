@@ -66,6 +66,36 @@ userSchema.methods.generateAuthToken = () => {
   return token;
 };
 
+userSchema.statics.findUserById = async function (userId) {
+  const user = await this.findById({ _id: userId });
+  const userid = user._id;
+  return this.aggregate([
+    { $match: { _id: userid } },
+
+    {
+      $lookup: {
+        from: "chiqimlar",
+        localField: "_id",
+        foreignField: "user",
+        as: "chiqimlar",
+      },
+    },
+    // { $unwind: "$chiqimlar" },
+    // {
+    //   $group: {
+    //     _id: { $last: "$_id" },
+    //     isAdmin: { $last: "$isAdmin" },
+    //     name: { $last: "$name" },
+    //     email: { $last: "$email" },
+    //     msisdn: { $last: "$msisdn" },
+    //     password: { $last: "$password" },
+    //     createdAt: { $last: "$createdAt" },
+    //     chiqimlar: { $addToSet: "$chiqimlar" },
+    //   },
+    // },
+  ]);
+};
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
