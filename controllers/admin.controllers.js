@@ -102,3 +102,18 @@ exports.listChiqim = async (req, res, next) => {
       .send("Server error while sending list of the chiqim data");
   }
 };
+
+// @desc Xarajatlar Diagrammasi oy bo'yicha(Chiqim)
+// @route GET /admin/diagramm/chiqim
+// @access Private
+exports.diagrammChiqim = async (req, res, next) => {
+  try {
+    const chiqimlar = await Chiqim.find({});
+    return res.status(200).send(chiqimlar);
+  } catch (error) {
+    return res
+      .status(400)
+      .send("Error occured while sending a diagramm data of chiqim");
+  }
+};
+

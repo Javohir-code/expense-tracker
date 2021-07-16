@@ -13,7 +13,11 @@ exports.loginUser = async (req, res, next) => {
       req.body.password
     );
     const token = user.generateAuthToken();
-    return res.header("auth-user", token).send(token);
+    console.log(user);
+    const userInfo = _.pick(user, ["_id", "isAdmin"]);
+    return res
+      .header("auth-user", token)
+      .json({ token: token, user: userInfo });
   } catch (error) {
     return res.status(400).send("Password or msisdn is not valid");
   }
