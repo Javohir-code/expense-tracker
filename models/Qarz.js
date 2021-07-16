@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 
-const chiqimSchema = new mongoose.Schema(
+const qarzSchema = new mongoose.Schema(
   {
-    amountChiqim: {
+    amountQarz: {
       type: Number,
       required: true,
     },
-    descriptionChiqim: {
+    descriptionQarz: {
       type: String,
       required: true,
     },
-    dateChiqim: {
+    dateQarz: {
       type: Date,
       default: Date.now,
     },
@@ -20,10 +20,10 @@ const chiqimSchema = new mongoose.Schema(
     },
   },
   {
-    collection: "chiqimlar",
+    collection: "qarzlar",
   }
 );
 
-const Chiqim = mongoose.model("Chiqim", chiqimSchema);
+const Qarz = mongoose.model("Qarz", qarzSchema);
 
-module.exports = Chiqim;
+module.exports = Qarz;

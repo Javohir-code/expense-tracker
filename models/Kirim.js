@@ -8,7 +8,6 @@ const kirimSchema = new mongoose.Schema(
     },
     descriptionKirim: {
       type: String,
-      required: true,
     },
     dateKirim: {
       type: Date,
@@ -17,6 +16,9 @@ const kirimSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+    },
+    adminId: {
+      type: String,
     },
   },
   {

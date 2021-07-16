@@ -1,10 +1,9 @@
 const User = require("../models/User");
-const Kirim = require("../models/Kirim");
+const Qarz = require("../models/Qarz");
 const Chiqim = require("../models/Chiqim");
+const Kirim = require("../models/Kirim");
 const _ = require("lodash");
 const moment = require("moment");
-const { query } = require("express");
-const { rest } = require("lodash");
 
 // @desc Adding User
 // @route POST /admin/add-user
@@ -48,43 +47,45 @@ exports.givingMoneyToEmployee = async (req, res, next) => {
   }
 };
 
-// @desc Xarajatlar Diagrammasi(Kirim)
-// @route GET /admin/diagram/kirim
+// @desc Xarajatlar Ro'yxati kun boyicha(Qarz)
+// @route GET /admin/qarz/lists
 // @access Private
-exports.diagramKirim = async (req, res, next) => {
+exports.listQarz = async (req, res, next) => {
   try {
-    const kirimlar = await Kirim.find({});
+    const qarzlar = await Qarz.find({});
     const queryDate = req.query.date;
     const newArray = [];
-    kirimlar.forEach((date) => {
-      const dateObj = date.dateKirim;
-      var month = dateObj.getUTCMonth() + 1; //months from 1-12
+    qarzlar.forEach((date) => {
+      const dateObj = date.dateQarz;
+      var month = dateObj.getUTCMonth() + 1;
       var day = dateObj.getUTCDate();
       var year = dateObj.getUTCFullYear();
       day = day.toString().split("") < 10 ? "0" + day : day;
       month = month.toString().split("") < 10 ? "0" + month : month;
-      newdate = day + "." + month + "." + year;
+      var newdate = day + "." + month + "." + year;
       if (newdate == queryDate) {
         newArray.push(date);
       }
     });
     return res.status(200).send(newArray);
   } catch (error) {
-    return res.status(500).send("Server error while sending diagram data");
+    return res
+      .status(500)
+      .send("Server error while sending list of the qarz data");
   }
 };
 
-// @desc Xarajatlar Diagrammasi(Chiqim)
-// @route GET /admin/diagram/chiqim
+// @desc Xarajatlar Ro'yxati kun boyicha(Chiqim)
+// @route GET /admin/chiqim/lists
 // @access Private
-exports.diagramChiqim = async (req, res, next) => {
+exports.listChiqim = async (req, res, next) => {
   try {
     const chiqimlar = await Chiqim.find({});
     const queryDate = req.query.date;
     const newArray = [];
     chiqimlar.forEach((date) => {
       const dateObj = date.dateChiqim;
-      var month = dateObj.getUTCMonth() + 1; //months from 1-12
+      var month = dateObj.getUTCMonth() + 1;
       var day = dateObj.getUTCDate();
       var year = dateObj.getUTCFullYear();
       day = day.toString().split("") < 10 ? "0" + day : day;
@@ -96,6 +97,8 @@ exports.diagramChiqim = async (req, res, next) => {
     });
     return res.status(200).send(newArray);
   } catch (error) {
-    return res.status(500).send("Server error while sending diagram data");
+    return res
+      .status(500)
+      .send("Server error while sending list of the chiqim data");
   }
 };

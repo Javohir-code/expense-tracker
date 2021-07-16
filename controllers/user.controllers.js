@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Chiqim = require("../models/Chiqim");
+const Qarz = require("../models/Qarz");
 const _ = require("lodash");
 
 // @desc Login User
@@ -27,11 +28,7 @@ exports.getUserById = async (req, res, next) => {
     console.log(typeof userId);
     console.log(userId);
     const user = await User.findUserById(userId);
-
-    return res.status(200).send(
-      user
-      // _.pick(user, ["_id", "isAdmin", "name", "email", "msisdn", "createdAt"])
-    );
+    return res.status(200).send(user);
   } catch (error) {
     return res.status(404).send("No user found with this ID");
   }
@@ -48,5 +45,19 @@ exports.spendMoneyByUser = async (req, res, next) => {
     return res.status(201).send(spendMoney);
   } catch (error) {
     return res.status(500).send("Error occured while spending a money", error);
+  }
+};
+
+// @desc Getting A Qarz
+// @route POST /user/get-qarz
+// @access Private
+exports.gettingQarzByUser = async (req, res, next) => {
+  try {
+    const qarz = new Qarz(req.body);
+    const result = await qarz.save();
+    const gettingQarz = await Qarz.populate(result, { path: "user" });
+    return res.status(201).send(gettingQarz);
+  } catch (error) {
+    return res.status(500).send("Error occured while getting a qarz", error);
   }
 };
