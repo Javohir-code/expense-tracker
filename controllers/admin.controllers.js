@@ -4,7 +4,6 @@ const Chiqim = require("../models/Chiqim");
 const Kirim = require("../models/Kirim");
 const _ = require("lodash");
 const moment = require("moment");
-const { filter } = require("lodash");
 
 // @desc Adding User
 // @route POST /admin/add-user
@@ -114,15 +113,11 @@ exports.diagrammChiqim = async (req, res, next) => {
     let total = 0;
     let length = 0;
     const queryData = req.query.month;
-    if (queryData) {
-      length = chiqimlar.length;
-    } else {
-      length;
-    }
     chiqimlar.forEach((chiqim) => {
       const createdAt = moment(chiqim.createdAt).format("MMMM");
       if (createdAt == queryData) {
         total += chiqim.amountChiqim;
+        length++;
       }
     });
     filtered = { month: queryData, amount: total };
@@ -141,18 +136,14 @@ exports.diagrammQarz = async (req, res, next) => {
   try {
     const debts = await Qarz.find({});
     let filtered = {};
-    const queryData = req.query.month;
     let total = 0;
     let length = 0;
-    if (queryData) {
-      length = debts.length;
-    } else {
-      length;
-    }
+    const queryData = req.query.month;
     debts.forEach((debt) => {
       const createdAt = moment(debt.dateQarz).format("MMMM");
       if (createdAt == queryData) {
         total += debt.amountQarz;
+        length++;
       }
     });
     filtered = { month: queryData, amount: total };
