@@ -4,6 +4,7 @@ const Chiqim = require("../models/Chiqim");
 const Kirim = require("../models/Kirim");
 const _ = require("lodash");
 const moment = require("moment");
+const { filter } = require("lodash");
 
 // @desc Adding User
 // @route POST /admin/add-user
@@ -104,12 +105,22 @@ exports.listChiqim = async (req, res, next) => {
 };
 
 // @desc Xarajatlar Diagrammasi oy bo'yicha(Chiqim)
-// @route GET /admin/diagramm/chiqim
+// @route GET /admin/diagramm/expense
 // @access Private
 exports.diagrammChiqim = async (req, res, next) => {
   try {
     const chiqimlar = await Chiqim.find({});
-    return res.status(200).send(chiqimlar);
+    let filtered = {};
+    const queryData = req.query.month;
+    let total = 0;
+    chiqimlar.forEach((chiqim) => {
+      const createdAt = moment(chiqim.createdAt).format("MMMM");
+      if (createdAt == queryData) {
+        total += chiqim.amountChiqim;
+      }
+    });
+    filtered = { month: queryData, amount: total };
+    return res.status(200).json({ count: chiqimlar.length, result: filtered });
   } catch (error) {
     return res
       .status(400)
@@ -117,3 +128,27 @@ exports.diagrammChiqim = async (req, res, next) => {
   }
 };
 
+
+// @desc Xarajatlar Diagrammasi oy bo'yicha(Qarz)
+// @route GET /admin/diagramm/debt
+// @access Private
+exports.diagrammQarz = async (req, res, next) => {
+  try {
+    const debts = await Qarz.find({});
+    let filtered = {};
+    const queryData = req.query.month;
+    let total = 0;
+    debts.forEach((debt) => {
+      const createdAt = moment(debt.dateQarz).format("MMMM");
+      if (createdAt == queryData) {
+        total += debt.amountQarz;
+      }
+    });
+    filtered = { month: queryData, amount: total };
+    return res.status(200).json({ count: debts.length, result: filtered });
+  } catch (error) {
+    return res
+      .status(400)
+      .send("Error occured while sending a diagramm data of chiqim");
+  }
+};
