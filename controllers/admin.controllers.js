@@ -111,8 +111,14 @@ exports.diagrammChiqim = async (req, res, next) => {
   try {
     const chiqimlar = await Chiqim.find({});
     let filtered = {};
-    const queryData = req.query.month;
     let total = 0;
+    let length = 0;
+    const queryData = req.query.month;
+    if (queryData) {
+      length = chiqimlar.length;
+    } else {
+      length;
+    }
     chiqimlar.forEach((chiqim) => {
       const createdAt = moment(chiqim.createdAt).format("MMMM");
       if (createdAt == queryData) {
@@ -120,14 +126,13 @@ exports.diagrammChiqim = async (req, res, next) => {
       }
     });
     filtered = { month: queryData, amount: total };
-    return res.status(200).json({ count: chiqimlar.length, result: filtered });
+    return res.status(200).json({ count: length, result: filtered });
   } catch (error) {
     return res
       .status(400)
       .send("Error occured while sending a diagramm data of chiqim");
   }
 };
-
 
 // @desc Xarajatlar Diagrammasi oy bo'yicha(Qarz)
 // @route GET /admin/diagramm/debt
@@ -138,6 +143,12 @@ exports.diagrammQarz = async (req, res, next) => {
     let filtered = {};
     const queryData = req.query.month;
     let total = 0;
+    let length = 0;
+    if (queryData) {
+      length = debts.length;
+    } else {
+      length;
+    }
     debts.forEach((debt) => {
       const createdAt = moment(debt.dateQarz).format("MMMM");
       if (createdAt == queryData) {
@@ -145,7 +156,7 @@ exports.diagrammQarz = async (req, res, next) => {
       }
     });
     filtered = { month: queryData, amount: total };
-    return res.status(200).json({ count: debts.length, result: filtered });
+    return res.status(200).json({ count: length, result: filtered });
   } catch (error) {
     return res
       .status(400)
