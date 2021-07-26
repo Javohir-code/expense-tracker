@@ -114,11 +114,16 @@ exports.diagrammChiqim = async (req, res, next) => {
     let length = 0;
     const queryData = req.query.month;
     chiqimlar.forEach((chiqim) => {
-      const createdAt = moment(chiqim.createdAt).format("MMMM");
+      const createdAt = moment(chiqim.dateChiqim).format("MMMM");
       if (createdAt == queryData) {
         total += chiqim.amountChiqim;
         length++;
       }
+
+      // const createdAt = moment(chiqim.createdAt).format("DD-MM-YYYY");
+      // const weekNumber = moment(createdAt).week();
+      // var nthOfMoth = Math.ceil(createdAt.date() / 7);
+      // console.log(createdAt);
     });
     filtered = { month: queryData, amount: total };
     return res.status(200).json({ count: length, result: filtered });
@@ -152,5 +157,36 @@ exports.diagrammQarz = async (req, res, next) => {
     return res
       .status(400)
       .send("Error occured while sending a diagramm data of chiqim");
+  }
+};
+
+// @desc Get A User Total expenses
+// @route GET /admin/user/:id
+// @access Private
+exports.getTotalExpenseOfUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    let income = 0;
+    let expense = 0;
+    let result = {};
+    const user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, result: `No user found with this ${id} Id` });
+    }
+
+    const kirimlar = await Kirim.find({ user: user._id });
+    kirimlar.forEach((kirim) => {
+      income += kirim.amountKirim;
+    });
+    const chiqimlar = await Chiqim.find({ user: user._id });
+    chiqimlar.forEach((chiqim) => {
+      expense += chiqim.amountChiqim;
+    });
+    result = { income: income, expense: expense };
+    return res.status(200).json({ success: true, result: result });
+  } catch (error) {
+    return res.status(400).json({ success: false, error: error });
   }
 };
