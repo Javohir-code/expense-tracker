@@ -52,7 +52,7 @@ exports.givingMoneyToEmployee = async (req, res, next) => {
 // @access Private
 exports.listQarz = async (req, res, next) => {
   try {
-    const qarzlar = await Qarz.find({});
+    const qarzlar = await Qarz.find({}).populate({ path: "user" });
     const queryDate = req.query.date;
     const newArray = [];
     qarzlar.forEach((date) => {
@@ -80,7 +80,7 @@ exports.listQarz = async (req, res, next) => {
 // @access Private
 exports.listChiqim = async (req, res, next) => {
   try {
-    const chiqimlar = await Chiqim.find({});
+    const chiqimlar = await Chiqim.find({}).populate({ path: "user" });
     const queryDate = req.query.date;
     const newArray = [];
     chiqimlar.forEach((date) => {
