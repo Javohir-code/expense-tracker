@@ -9,6 +9,7 @@ const {
   diagrammChiqim,
   diagrammQarz,
   getTotalExpenseOfUser,
+  getAllExpenses,
 } = require("../controllers/admin.controllers");
 
 router.route("/add-user").post(addUser);
@@ -19,5 +20,6 @@ router.route("/chiqim/lists").get(listChiqim);
 router.route("/diagramm/expense").get(diagrammChiqim);
 router.route("/diagramm/debt").get(diagrammQarz);
 router.route("/user/:id").get(getTotalExpenseOfUser);
+router.route("/expenses").get(getAllExpenses);
 
 module.exports = router;

@@ -190,3 +190,15 @@ exports.getTotalExpenseOfUser = async (req, res, next) => {
     return res.status(400).json({ success: false, error: error });
   }
 };
+
+// @desc Get A Total Kirim
+// @route GET /admin/expenses
+// @access Private
+exports.getAllExpenses = async (req, res, next) => {
+  try {
+    const kirimlar = await Kirim.find({});
+    return res.status(200).send(kirimlar);
+  } catch (error) {
+    return res.status(400).send("Error occured", error);
+  }
+};
