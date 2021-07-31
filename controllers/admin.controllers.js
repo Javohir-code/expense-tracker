@@ -196,8 +196,23 @@ exports.getTotalExpenseOfUser = async (req, res, next) => {
 // @access Private
 exports.getAllExpenses = async (req, res, next) => {
   try {
-    const kirimlar = await Kirim.find({});
-    return res.status(200).send(kirimlar);
+    const kirimlar = await Kirim.find({}).populate({ path: "user" });
+    const queryDate = req.query.date;
+    const newArray = [];
+
+    kirimlar.forEach((date) => {
+      const dateObj = date.dateKirim;
+      var month = dateObj.getUTCMonth() + 1;
+      var day = dateObj.getUTCDate();
+      var year = dateObj.getUTCFullYear();
+      day = day.toString().split("") < 10 ? "0" + day : day;
+      month = month.toString().split("") < 10 ? "0" + month : month;
+      newdate = day + "." + month + "." + year;
+      if (newdate == queryDate) {
+        newArray.push(date);
+      }
+    });
+    return res.status(200).send(newArray);
   } catch (error) {
     return res.status(400).send("Error occured", error);
   }
