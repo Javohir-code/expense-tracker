@@ -116,7 +116,9 @@ exports.diagrammXarajatlar = async (req, res, next) => {
       let total = 0;
       let length = 0;
       chiqimlar.forEach((chiqim) => {
-        const createdAt = moment(chiqim.dateChiqim).format("MMMM");
+        const createdAt = moment(chiqim.dateChiqim.toLocaleString()).format(
+          "MMMM"
+        );
         if (createdAt == month) {
           total += chiqim.amountChiqim;
           length++;
@@ -153,7 +155,7 @@ exports.diagrammAdminUser = async (req, res, next) => {
       let total = 0;
       let length = 0;
       kirims.forEach((kirim) => {
-        const createdAt = moment(kirim.dateKirim).format("MMMM");
+        const createdAt = moment(kirim.dateKirim.toLocaleString()).format("MMMM");
         if (createdAt == month) {
           total += kirim.amountKirim;
           length++;
