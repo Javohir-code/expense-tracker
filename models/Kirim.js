@@ -25,7 +25,6 @@ const kirimSchema = new mongoose.Schema(
     collection: "kirimlar",
   }
 );
-
 const Kirim = mongoose.model("Kirim", kirimSchema);
 
 module.exports = Kirim;
