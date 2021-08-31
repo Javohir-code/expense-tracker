@@ -106,27 +106,33 @@ exports.listChiqim = async (req, res, next) => {
 // @desc Xarajatlar Diagrammasi oy bo'yicha(Chiqim)
 // @route GET /admin/diagramm/expense
 // @access Private
-exports.diagrammChiqim = async (req, res, next) => {
+exports.diagrammXarajatlar = async (req, res, next) => {
   try {
     const chiqimlar = await Chiqim.find({});
-    let filtered = {};
-    let total = 0;
-    let length = 0;
-    const queryData = req.query.month;
-    chiqimlar.forEach((chiqim) => {
-      const createdAt = moment(chiqim.dateChiqim).format("MMMM");
-      if (createdAt == queryData) {
-        total += chiqim.amountChiqim;
-        length++;
-      }
+    let result = [];
+    const months = ["August", "September", "October", "November", "December"];
+    months.forEach((month) => {
+      let filtered = {};
+      let total = 0;
+      let length = 0;
+      chiqimlar.forEach((chiqim) => {
+        const createdAt = moment(chiqim.dateChiqim).format("MMMM");
+        if (createdAt == month) {
+          total += chiqim.amountChiqim;
+          length++;
+        }
+      });
+      filtered = { month: month, amount: total, count: length };
 
-      // const createdAt = moment(chiqim.createdAt).format("DD-MM-YYYY");
-      // const weekNumber = moment(createdAt).week();
-      // var nthOfMoth = Math.ceil(createdAt.date() / 7);
-      // console.log(createdAt);
+      result.push(filtered);
     });
-    filtered = { month: queryData, amount: total };
-    return res.status(200).json({ count: length, result: filtered });
+
+    // const createdAt = moment(chiqim.createdAt).format("DD-MM-YYYY");
+    // const weekNumber = moment(createdAt).week();
+    // var nthOfMoth = Math.ceil(createdAt.date() / 7);
+    // console.log(createdAt);
+
+    return res.status(200).json({ result: result });
   } catch (error) {
     return res
       .status(400)
@@ -134,25 +140,32 @@ exports.diagrammChiqim = async (req, res, next) => {
   }
 };
 
-// @desc Xarajatlar Diagrammasi oy bo'yicha(Qarz)
-// @route GET /admin/diagramm/debt
+// @desc Admin -> User Diagrammasi oy bo'yicha(Qarz)
+// @route GET /admin/diagramm/kirim
 // @access Private
-exports.diagrammQarz = async (req, res, next) => {
+exports.diagrammAdminUser = async (req, res, next) => {
   try {
-    const debts = await Qarz.find({});
-    let filtered = {};
-    let total = 0;
-    let length = 0;
-    const queryData = req.query.month;
-    debts.forEach((debt) => {
-      const createdAt = moment(debt.dateQarz).format("MMMM");
-      if (createdAt == queryData) {
-        total += debt.amountQarz;
-        length++;
-      }
+    const kirims = await Kirim.find({});
+    let result = [];
+    const months = ["August", "September", "October", "November", "December"];
+    months.forEach((month) => {
+      let filtered = {};
+      let total = 0;
+      let length = 0;
+      kirims.forEach((kirim) => {
+        const createdAt = moment(kirim.dateKirim).format("MMMM");
+        if (createdAt == month) {
+          total += kirim.amountKirim;
+          length++;
+        }
+      });
+
+      filtered = { month: month, amount: total, count: length };
+
+      result.push(filtered);
     });
-    filtered = { month: queryData, amount: total };
-    return res.status(200).json({ count: length, result: filtered });
+
+    return res.status(200).json({ result: result });
   } catch (error) {
     return res
       .status(400)

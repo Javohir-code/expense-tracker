@@ -6,8 +6,8 @@ const {
   givingMoneyToEmployee,
   listChiqim,
   listQarz,
-  diagrammChiqim,
-  diagrammQarz,
+  diagrammXarajatlar,
+  diagrammAdminUser,
   getTotalExpenseOfUser,
   getAllExpenses,
 } = require("../controllers/admin.controllers");
@@ -17,8 +17,8 @@ router.route("/contacts").get(contacts);
 router.route("/expense").post(givingMoneyToEmployee);
 router.route("/qarz/lists").get(listQarz);
 router.route("/chiqim/lists").get(listChiqim);
-router.route("/diagramm/expense").get(diagrammChiqim);
-router.route("/diagramm/debt").get(diagrammQarz);
+router.route("/diagramm/expense").get(diagrammXarajatlar);
+router.route("/diagramm/kirim").get(diagrammAdminUser);
 router.route("/user/:id").get(getTotalExpenseOfUser);
 router.route("/expenses").get(getAllExpenses);
 
