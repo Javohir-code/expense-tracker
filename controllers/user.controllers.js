@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Chiqim = require("../models/Chiqim");
 const Qarz = require("../models/Qarz");
 const _ = require("lodash");
+const { response } = require("express");
 
 // @desc Login User
 // @route POST /user/login
@@ -29,12 +30,14 @@ exports.loginUser = async (req, res, next) => {
 exports.getUserById = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    console.log(typeof userId);
-    console.log(userId);
     const user = await User.findUserById(userId);
+    user[0].chiqimlar.forEach((chiqim) => {
+      if (JSON.stringify(user[0]._id) == JSON.stringify(chiqim.user))
+        chiqim.user = user[0].name;
+    });
     return res.status(200).send(user);
   } catch (error) {
-    return res.status(404).send("No user found with this ID");
+    return res.status(404).send("No user found with this ID", error);
   }
 };
 
