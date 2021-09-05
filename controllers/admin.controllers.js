@@ -230,3 +230,5 @@ exports.getAllExpenses = async (req, res, next) => {
     return res.status(400).send("Error occured", error);
   }
 };
+
+

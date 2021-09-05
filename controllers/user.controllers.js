@@ -1,8 +1,9 @@
 const User = require("../models/User");
 const Chiqim = require("../models/Chiqim");
 const Qarz = require("../models/Qarz");
+const Kirim = require("../models/Kirim");
 const _ = require("lodash");
-const { response } = require("express");
+const moment = require("moment");
 
 // @desc Login User
 // @route POST /user/login
@@ -68,3 +69,46 @@ exports.gettingQarzByUser = async (req, res, next) => {
     return res.status(500).send("Error occured while getting a qarz", error);
   }
 };
+
+// @desc Get A Total Expense Specific User
+// @route GET /user/:id/total-expense
+// @access Private
+exports.getttingTotalExpenseAndKirimOfUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { momentY } = req.query;
+    const { momentM } = req.query;
+    let result = {};
+    let totalChiqim = 0;
+    let totalKirim = 0;
+    const expenses = await Chiqim.find({ user: id });
+    const kirimlar = await Kirim.find({ user: id });
+    expenses.forEach((exp) => {
+      const momentYear = moment(exp.dateChiqim).format("YYYY");
+      const momentMonth = moment(exp.dateChiqim).format("MMMM");
+      if (momentYear == momentY && momentMonth == momentM) {
+        totalChiqim += exp.amountChiqim;
+      }
+    });
+    kirimlar.forEach((kirim) => {
+      const momentYear = moment(kirim.dateKirim).format("YYYY");
+      const momentMonth = moment(kirim.dateKirim).format("MMMM");
+      if (momentYear == momentY && momentMonth == momentM) {
+        console.log("......KIRIM.........");
+        totalKirim += kirim.amountKirim;
+      }
+    });
+    result = {
+      month: momentM,
+      totalChiqim: totalChiqim,
+      totalKirim: totalKirim,
+    };
+    return res.status(200).json({ result: result });
+  } catch (error) {
+    return res
+      .status(400)
+      .json("Error occured while getting a total expense of user", error);
+  }
+};
+
+
