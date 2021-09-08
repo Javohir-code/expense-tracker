@@ -31,11 +31,22 @@ exports.loginUser = async (req, res, next) => {
 exports.getUserById = async (req, res, next) => {
   try {
     const { userId } = req.params;
+    const { momentY } = req.query;
+    const { momentM } = req.query;
+    let result = [];
     const user = await User.findUserById(userId);
     user[0].chiqimlar.forEach((chiqim) => {
-      if (JSON.stringify(user[0]._id) == JSON.stringify(chiqim.user))
-        chiqim.user = user[0].name;
+      const momentYear = moment(chiqim.dateChiqim).format("YYYY");
+      const momentMonth = moment(chiqim.dateChiqim).format("MMMM");
+      if (momentYear == momentY && momentMonth == momentM) {
+        if (JSON.stringify(user[0]._id) == JSON.stringify(chiqim.user)) {
+          chiqim.user = user[0].name;
+          result.push(chiqim);
+        }
+      }
     });
+    user[0].chiqimlar = result;
+
     return res.status(200).send(user);
   } catch (error) {
     return res.status(404).send("No user found with this ID", error);
@@ -94,7 +105,6 @@ exports.getttingTotalExpenseAndKirimOfUser = async (req, res, next) => {
       const momentYear = moment(kirim.dateKirim).format("YYYY");
       const momentMonth = moment(kirim.dateKirim).format("MMMM");
       if (momentYear == momentY && momentMonth == momentM) {
-        console.log("......KIRIM.........");
         totalKirim += kirim.amountKirim;
       }
     });
@@ -105,10 +115,9 @@ exports.getttingTotalExpenseAndKirimOfUser = async (req, res, next) => {
     };
     return res.status(200).json({ result: result });
   } catch (error) {
-    return res
-      .status(400)
-      .json("Error occured while getting a total expense of user", error);
+    return res.json(
+      "Error occured while getting a total expense of user",
+      error
+    );
   }
 };
-
-
